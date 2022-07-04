@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script>
+      window._ak_is_mobile = (function () {
+        var url = window.location.href.split('#')[0].split('?')[0];
+        if (url.indexOf('pc.html') > 0) return false;
+        if (url.indexOf('h5.html') > 0) return true;
+        return /(iPhone|iPad|Android|iOS|Mobile)/i.test(navigator.userAgent);
+      })();
+    </script>
+    <!-- 渲染头部 -->
+    <script>
+      (function () {
+        var html = _ak_is_mobile ? '@H5_HEAD_HTML@' : '@PC_HEAD_HTML@';
+        document.write(unescape(html));
+      })();
+    </script>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var html = _ak_is_mobile ? '@H5_BODY_HTML@' : '@PC_BODY_HTML@';
+        document.write(unescape(html));
+      })();
+    </script>
+  </body>
+</html>
