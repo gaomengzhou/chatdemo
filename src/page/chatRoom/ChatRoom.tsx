@@ -1,9 +1,7 @@
 import { Divider, DotLoading, NoticeBar } from 'antd-mobile';
 import { ReactElement, useEffect, useState } from 'react';
-import { useSelector } from 'redux/hook';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'redux/store';
-import { chatData, getChatHistory } from 'redux/chatRoom/slice';
+import { useAppDispatch, useAppSelector } from 'redux/hook';
+import { getChatHistory, sedMsg } from 'redux/chatRoom/slice';
 import avatar from 'assets/images/avatar.png';
 import socket from 'utils/websocket/Websocket';
 import { useSearchParams } from 'react-router-dom';
@@ -28,8 +26,8 @@ const ChatRoom: React.FC = (): ReactElement => {
     marquee_content: '',
     marquee_show: false,
   });
-  const list = useSelector((s) => s.chatData.chatList);
-  const dispatch = useDispatch<AppDispatch>();
+  const list = useAppSelector((s) => s.chatData.chatList);
+  const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams([]);
   // 订阅频道ID
   const { id } = Object.fromEntries(searchParams) || '1';
@@ -53,7 +51,7 @@ const ChatRoom: React.FC = (): ReactElement => {
       if (msg.data === 'success') return;
       const data = JSON.parse(msg.data);
       console.log(data);
-      dispatch(chatData.actions.sedMsg(data));
+      dispatch(sedMsg(data));
       timer = setTimeout((): void => {
         const scroll = document.querySelector('.scroll') as HTMLDivElement;
         scroll.style.scrollBehavior = 'smooth';

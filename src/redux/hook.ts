@@ -1,8 +1,6 @@
-import {
-  useSelector as useSelectorCustom,
-  TypedUseSelectorHook,
-} from 'react-redux';
-import { RootState } from './store';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import type { RootState, AppDispatch } from './store';
 
-// eslint-disable-next-line import/prefer-default-export
-export const useSelector: TypedUseSelectorHook<RootState> = useSelectorCustom;
+// 在整个程序中定义 `useDispatch` 和 `useSelector` 类型
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

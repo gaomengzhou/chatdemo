@@ -1,12 +1,11 @@
 import {
-  ActionReducerMapBuilder,
   createAsyncThunk,
   createSlice,
   PayloadAction,
   SerializedError,
-  SliceCaseReducers,
 } from '@reduxjs/toolkit';
 import { Toast } from 'antd-mobile';
+import { AppThunk } from 'redux/store';
 // import logo from "assets/images/logo.svg";
 interface ChatState<T = any> {
   chatList: T[];
@@ -35,11 +34,7 @@ export const getChatHistory = createAsyncThunk(
   }
 );
 
-export const chatData = createSlice<
-  ChatState,
-  SliceCaseReducers<ChatState>,
-  string
->({
+const chatData = createSlice({
   name: 'chat',
   initialState,
   reducers: {
@@ -53,22 +48,24 @@ export const chatData = createSlice<
       state.chatList.push(action.payload);
     },
   },
-  extraReducers(build: ActionReducerMapBuilder<ChatState>): void | undefined {
-    build
+  extraReducers: (builder) => {
+    builder
       .addCase(
         getChatHistory.pending,
         // eslint-disable-next-line no-unused-vars
-        (state: ChatState, action: PayloadAction) => {
+        (state) => {
           // 可以写Loading的逻辑,加载等等
         }
       )
       .addCase(
         getChatHistory.fulfilled,
-        <T>(
-          state: typeof initialState,
+        (
+          state,
           action: PayloadAction<{
-            isPullDwon: boolean;
-            data: { [key: string]: Array<T> };
+            page: number;
+            size: number;
+            isPullDwon?: boolean;
+            data?: any;
           }>
         ) => {
           if (action.payload.isPullDwon) {
@@ -97,3 +94,21 @@ export const chatData = createSlice<
     // );
   },
 });
+
+export const { sedMsg } = chatData.actions;
+
+// 也可以手动编写 thunk，其中可能包含同步和异步逻辑。
+// 下面是一个基于当前状态有条件地调度动作的例子。
+export const exampleAction = (params: any): AppThunk => {
+  /**
+   * @param dispatch 字面意义，就是发送Action用的
+   * @param getState 获取整个store里的state
+   */
+  return (dispatch, getState) => {
+    console.log(params);
+    const msg = getState().chatData.notice || '';
+    dispatch(sedMsg(msg));
+  };
+};
+
+export default chatData.reducer;
