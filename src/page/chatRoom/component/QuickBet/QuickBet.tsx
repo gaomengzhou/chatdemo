@@ -2,10 +2,12 @@
 import { Input, Mask } from 'antd-mobile';
 import { ReactComponent as Refresh } from 'assets/images/refresh.svg';
 import { useState } from 'react';
+import { useThrottleFn } from 'utils/tools/method';
 import BetModal from '../BetModal/BetModal';
 import styles from './QuickBet.module.scss';
 
 const QuickBet: React.FC<{ isDisable?: boolean }> = ({ isDisable = false }) => {
+  const throttleFn = useThrottleFn();
   // Input框里的金额
   const [amount, setAmount] = useState<string | undefined>('');
   // 快捷金额
@@ -68,7 +70,7 @@ const QuickBet: React.FC<{ isDisable?: boolean }> = ({ isDisable = false }) => {
           return (
             <div
               className={`${item.checked && styles.active}`}
-              onClick={() => selectAmount(item)}
+              onClick={() => throttleFn(() => selectAmount(item), 500)}
               style={{ width: '6.5rem' }}
               key={item.id}
             >

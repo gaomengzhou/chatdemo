@@ -4,7 +4,8 @@ import { sedMsg } from 'redux/chatRoom/slice';
 import { useAppDispatch } from 'redux/hook';
 import socket from 'utils/websocket/Websocket';
 import { ReactComponent as SendMsg } from 'assets/images/icon-send.svg';
-import { sleep } from 'utils/tools/useDebounce';
+
+import { sleep } from 'utils/tools/method';
 import styles from './SendBar.module.scss';
 import Bet from '../component/Bet/Bet';
 import ODD from '../component/ODD/ODD';
