@@ -11,6 +11,7 @@ import Bet from '../component/Bet/Bet';
 import ODD from '../component/ODD/ODD';
 import BaiJiaLe from '../component/BaiJiaLe/BaiJiaLe';
 import NiuNiu from '../component/NiuNiu/NiuNiu';
+import HashNiuNiu from '../component/HashNiuNiu/HashNiuNiu';
 
 const show = false;
 
@@ -104,9 +105,11 @@ function SendBar() {
           {/* 单双 */}
           {show ? <ODD /> : undefined}
           {/* 百家乐 */}
-          {!show ? <BaiJiaLe /> : undefined}
+          {show ? <BaiJiaLe /> : undefined}
           {/* 牛牛 */}
           {show ? <NiuNiu /> : undefined}
+          {/* 哈希牛牛 */}
+          {!show ? <HashNiuNiu /> : undefined}
         </>
       </Bet>
     </div>

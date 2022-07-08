@@ -98,8 +98,10 @@ const QuickBet: React.FC<{ isDisable?: boolean }> = ({ isDisable = false }) => {
         />
         <button
           onClick={modalAlert}
-          disabled={isDisable}
-          className={`${isDisable && styles.disable}`}
+          disabled={isDisable || !amount}
+          className={`${
+            (isDisable && styles.disable) || (!amount && styles.disable)
+          }`}
         >
           提交
         </button>
