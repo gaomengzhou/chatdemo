@@ -1,0 +1,26 @@
+{
+  "header": {
+    "language": "English",
+    "english": "English",
+    "chinese": "Chinese",
+    "signin": "login",
+    "title": "Hash Lottery"
+  },
+  "footer": {
+    "btn1": "Betu88.com",
+    "btn2": "Telegram"
+  },
+  "home": {
+    "blockNumber": "Block Height",
+    "blockTime": "time",
+    "blockHash": "Block Hash",
+    "numberMantissa": "No.",
+    "singleDoubleResult": "Odd/ Even",
+    "bigSmallResult": "Big/ Small",
+    "odd": "odd",
+    "even": "even",
+    "big": "big",
+    "small": "small",
+    "OfficialVerification": "Official verification"
+  }
+}

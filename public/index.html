@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/betu-icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+    />
     <meta name="theme-color" content="#000000" />
     <meta name="version" content="%REACT_APP_VERSION%" />
     <meta name="keywords" content="%REACT_APP_META_KEYWORDS%" />
@@ -29,14 +32,27 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+      此 HTML 文件是一个模板。
+      如果您直接在浏览器中打开它，您将看到一个空白页面。
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+      您可以向此文件添加网络字体、元标记或分析。
+      构建步骤会将捆绑的脚本放入 <body> 标记中。
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
+      要开始开发，请运行 `npm start` 或 `yarn start`。
+      要创建生产包，请使用 `npm run build` 或 `yarn build`。
     -->
+    <script>
+      // 禁止双击手机浏览器缩放页面大小
+      window.onload = () => {
+        document.addEventListener('gesturestart', (event) => {
+          event.preventDefault();
+        });
+      };
+      window.onbeforeunload = () => {
+        document.removeEventListener('gesturestart', (event) => {
+          event.preventDefault();
+        });
+      };
+    </script>
   </body>
 </html>

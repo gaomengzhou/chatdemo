@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { store } from 'redux/store';
 import App from './App';
+import './i18n/config';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

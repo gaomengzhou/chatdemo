@@ -1,0 +1,91 @@
+.mask {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  color: #333;
+  width: 80%;
+  height: 38rem;
+  //   transition: 0.3s;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  h3 {
+    font-family: PingFangSC-Regular;
+    text-align: center;
+    border-bottom: 1px solid #e7ecfd;
+    height: 6rem;
+    line-height: 6rem;
+  }
+  .main {
+    padding: 2rem;
+    box-sizing: border-box;
+    p {
+      color: #9598aa;
+      font-family: PingFangSC-Regular;
+    }
+    .top {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #e7ecfd;
+      .gamename {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+      .options {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        div {
+          &:last-child {
+            margin-left: 10rem;
+          }
+        }
+      }
+    }
+    .bottom {
+      margin-top: 1rem;
+      .address {
+        margin-top: 1rem;
+      }
+    }
+    .footer {
+      margin-top: 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      button {
+        flex: 1;
+        height: 3rem;
+        border: 00;
+        border-radius: 0.5rem;
+        color: #fff;
+        &:first-child {
+          background-color: #d1d4d7;
+          &:active {
+            background-color: #e8eaec;
+          }
+        }
+        &:last-child {
+          margin-left: 2rem;
+          background-color: #149ede;
+          &:active {
+            background-color: #4eb7e7;
+          }
+        }
+      }
+    }
+  }
+}
+.height {
+  right: 0;
+  transition: 0.3s;
+}
+:global(.animate__bounceOut) {
+  --animate-duration: 3s;
+}
+:global(.animate__bounceIn) {
+  --animate-duration: 0.5s;
+}

@@ -5,7 +5,7 @@ import {
   SerializedError,
 } from '@reduxjs/toolkit';
 import { Toast } from 'antd-mobile';
-import { AppThunk } from 'redux/store';
+import { AppThunk, RootState } from 'redux/store';
 // import logo from "assets/images/logo.svg";
 interface ChatState<T = any> {
   chatList: T[];
@@ -97,6 +97,7 @@ const chatData = createSlice({
 
 export const { sedMsg } = chatData.actions;
 
+export const MsgList = (state: RootState) => state.chatData.chatList;
 // 也可以手动编写 thunk，其中可能包含同步和异步逻辑。
 // 下面是一个基于当前状态有条件地调度动作的例子。
 export const exampleAction = (params: any): AppThunk => {

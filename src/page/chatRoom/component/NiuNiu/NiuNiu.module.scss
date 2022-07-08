@@ -1,0 +1,25 @@
+.main {
+  height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .btn {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    background-color: #fff;
+    width: 31%;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5rem;
+    color: #333333;
+    transition: 0.5s;
+  }
+  .active {
+    background-color: #3c6dc2;
+    color: #fff;
+    transition: 0.5s;
+  }
+}

@@ -1,0 +1,27 @@
+.container {
+  background-color: #f1f2f3;
+  min-height: 6rem;
+  width: 100%;
+  overflow: hidden;
+  .send-input {
+    height: 6rem;
+    background-color: #fff;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    .bet {
+      width: 6rem;
+      height: 3rem;
+      border-radius: 1.4rem;
+      background-color: #8cb2c9;
+      text-align: center;
+      color: #f9f9f9;
+      font-family: PingFangSC-Regular;
+      font-size: 1rem;
+      line-height: 3rem;
+    }
+  }
+}

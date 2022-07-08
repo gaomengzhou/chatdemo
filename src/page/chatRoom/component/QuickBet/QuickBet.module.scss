@@ -1,0 +1,72 @@
+.quick-bet {
+  font-family: PingFangSC-Regular;
+  box-sizing: border-box;
+  .title {
+    padding-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .left {
+      color: #9598aa;
+      font-size: 1.2rem;
+    }
+    .right {
+      display: flex;
+      align-items: center;
+      color: rgba(149, 152, 170, 0.8);
+      font-size: 1rem;
+      p {
+        margin-right: 1rem;
+      }
+    }
+  }
+  .amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    div {
+      background-color: #fff;
+      height: 3.6rem;
+      border-radius: 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: PingFangSC-Regular;
+      font-size: 1.5rem;
+      border: 1px solid #fff;
+      transition: 0.5s;
+      &:active {
+        background-color: rgb(247, 247, 247);
+      }
+    }
+    .active {
+      transition: 1s;
+      border: 1px solid #3c6dc2;
+      color: #3c6dc2;
+    }
+  }
+  .payInput {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    button {
+      border: 0;
+      width: 8rem;
+      height: 3rem;
+      background-color: #0078d7;
+      border-radius: 1.5rem;
+      color: #fff;
+      &:active {
+        background-color: #439be4;
+      }
+    }
+    .disable {
+      background-color: #b9b9b9;
+      &:active {
+        background-color: #b9b9b9;
+      }
+    }
+  }
+}

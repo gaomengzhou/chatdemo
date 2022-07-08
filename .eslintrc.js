@@ -38,6 +38,9 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'react/button-has-type': 'off',
+    'react/prop-types': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
     eqeqeq: 2,
   },
 };

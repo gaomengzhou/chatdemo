@@ -1,0 +1,26 @@
+{
+  "header": {
+    "language": "中文",
+    "english": "英文",
+    "chinese": "中文",
+    "signin": "登陆",
+    "title": "哈希开奖网"
+  },
+  "footer": {
+    "btn1": "进入官网",
+    "btn2": "电报群聊"
+  },
+  "home": {
+    "blockNumber": "区块高度",
+    "blockTime": "区块时间",
+    "blockHash": "区块哈希",
+    "numberMantissa": "数字",
+    "singleDoubleResult": "单双",
+    "bigSmallResult": "大小",
+    "odd": "单",
+    "even": "双",
+    "big": "大",
+    "small": "小",
+    "OfficialVerification": "官方验证"
+  }
+}
