@@ -21,6 +21,8 @@ const ChatRoom: React.FC = (): ReactElement => {
   const list = useAppSelector((s: any) => s.chatData.chatList);
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams([]);
+  // 显示到底部的按钮
+  const [showGoToBottom, setShowGoToBottom] = useState(false);
   // 订阅频道ID
   const { id } = Object.fromEntries(searchParams) || '1';
   // 挂载 是否在ios和 安卓中
@@ -103,6 +105,14 @@ const ChatRoom: React.FC = (): ReactElement => {
     const scrolls = document.querySelector('.scroll') as HTMLDivElement;
     scrolls.style.scrollBehavior = 'unset';
     const getMore = async (): Promise<void> => {
+      const caclHeight =
+        scrolls.scrollTop + scrolls.offsetHeight - scrolls.scrollHeight;
+      if (caclHeight < -60) {
+        setShowGoToBottom(true);
+      } else {
+        setShowGoToBottom(false);
+      }
+
       const beforeHeight = (document.querySelector('.scroll') as HTMLDivElement)
         .scrollHeight;
       if (scrolls.scrollTop === 0 && loading) {
@@ -141,7 +151,11 @@ const ChatRoom: React.FC = (): ReactElement => {
             }}
           />
           {/* 聊天记录 */}
-          <MessageList list={list} />
+          <MessageList
+            list={list}
+            showGoToBottom={showGoToBottom}
+            setShowGoToBottom={setShowGoToBottom}
+          />
         </div>
         {/* 发送栏 */}
         <SendBar />

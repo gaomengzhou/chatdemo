@@ -1,9 +1,20 @@
-/* eslint-disable react/no-array-index-key */
-
+/* eslint-disable no-unused-vars */
 import avatar from 'assets/images/avatar.png';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import styles from './MessageList.module.scss';
 
-function MessageList({ list }: { list: { [key: string]: any }[] }) {
+function MessageList({
+  list,
+  showGoToBottom,
+  setShowGoToBottom,
+}: {
+  list: { [key: string]: any }[];
+  showGoToBottom: boolean;
+  setShowGoToBottom: Dispatch<SetStateAction<boolean>>;
+}) {
+  useEffect(() => {
+    console.log(showGoToBottom);
+  }, [showGoToBottom]);
   return (
     <div>
       {list &&
