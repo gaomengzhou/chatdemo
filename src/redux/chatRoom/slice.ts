@@ -10,9 +10,11 @@ import { AppThunk, RootState } from 'redux/store';
 interface ChatState<T = any> {
   chatList: T[];
   notice?: string;
+  showBet: boolean;
 }
 const initialState: ChatState = {
   chatList: [],
+  showBet: false,
 };
 
 export const getChatHistory = createAsyncThunk(
@@ -46,6 +48,9 @@ const chatData = createSlice({
         state.chatList.shift();
       }
       state.chatList.push(action.payload);
+    },
+    setBetStatu: (state, action) => {
+      state.showBet = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -95,7 +100,7 @@ const chatData = createSlice({
   },
 });
 
-export const { sedMsg } = chatData.actions;
+export const { sedMsg, setBetStatu } = chatData.actions;
 
 export const MsgList = (state: RootState) => state.chatData.chatList;
 // 也可以手动编写 thunk，其中可能包含同步和异步逻辑。

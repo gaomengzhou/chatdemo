@@ -151,11 +151,7 @@ const ChatRoom: React.FC = (): ReactElement => {
             }}
           />
           {/* 聊天记录 */}
-          <MessageList
-            list={list}
-            showGoToBottom={showGoToBottom}
-            setShowGoToBottom={setShowGoToBottom}
-          />
+          <MessageList list={list} showGoToBottom={showGoToBottom} />
         </div>
         {/* 发送栏 */}
         <SendBar />

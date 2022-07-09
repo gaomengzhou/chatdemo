@@ -1,7 +1,7 @@
 import { Input, Toast } from 'antd-mobile';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { sedMsg } from 'redux/chatRoom/slice';
-import { useAppDispatch } from 'redux/hook';
+import { sedMsg, setBetStatu } from 'redux/chatRoom/slice';
+import { useAppDispatch, useAppSelector } from 'redux/hook';
 import socket from 'utils/websocket/Websocket';
 import { ReactComponent as SendMsg } from 'assets/images/icon-send.svg';
 import styles from './SendBar.module.scss';
@@ -17,7 +17,8 @@ function SendBar() {
   // 聊天信息
   const [value, setValue] = useState<string>('');
   // 显示隐藏投注
-  const [showBet, setShowBet] = useState(false);
+  const showBet = useAppSelector((s) => s.chatData.showBet);
+
   const dispatch = useAppDispatch();
   const sendText = async (): Promise<void> => {
     if (!value) {
@@ -44,9 +45,10 @@ function SendBar() {
   useEffect(() => {
     const main = document.querySelector('.scroll') as HTMLDivElement;
     main.onclick = () => {
-      setShowBet(false);
+      // setShowBet(false);
+      dispatch(setBetStatu(false));
     };
-  }, []);
+  }, [dispatch]);
 
   useLayoutEffect(() => {
     let timer: any = null;
@@ -68,7 +70,7 @@ function SendBar() {
 
   // 投注
   const toBet = async () => {
-    setShowBet(!showBet);
+    dispatch(setBetStatu(!showBet));
   };
 
   return (
