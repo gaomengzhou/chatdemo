@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { Input, Mask } from 'antd-mobile';
 import { ReactComponent as Refresh } from 'assets/images/refresh.svg';
 import { useState } from 'react';

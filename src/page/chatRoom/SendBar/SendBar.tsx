@@ -1,11 +1,9 @@
 import { Input, Toast } from 'antd-mobile';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { sedMsg } from 'redux/chatRoom/slice';
 import { useAppDispatch } from 'redux/hook';
 import socket from 'utils/websocket/Websocket';
 import { ReactComponent as SendMsg } from 'assets/images/icon-send.svg';
-
-import { sleep } from 'utils/tools/method';
 import styles from './SendBar.module.scss';
 import Bet from '../component/Bet/Bet';
 import ODD from '../component/ODD/ODD';
@@ -20,8 +18,6 @@ function SendBar() {
   const [value, setValue] = useState<string>('');
   // 显示隐藏投注
   const [showBet, setShowBet] = useState(false);
-  // 计算Bet组件高度
-  const [betHeight, setBetHeight] = useState(0);
   const dispatch = useAppDispatch();
   const sendText = async (): Promise<void> => {
     if (!value) {
@@ -52,31 +48,27 @@ function SendBar() {
     };
   }, []);
 
-  useEffect(() => {
-    const main = document.querySelector('.scroll') as HTMLDivElement;
+  useLayoutEffect(() => {
     let timer: any = null;
-    if (showBet && betHeight > 0) {
-      console.log('betHeight', betHeight);
-      main.style.height = `calc(100% - 6rem - ${betHeight / 10}rem)`;
+    const main = document.querySelector('.scroll') as HTMLDivElement;
+    if (showBet) {
+      main.style.height = `calc(100% - 6rem - 28.5rem)`;
       timer = setTimeout(() => {
         main.scrollTop = main.scrollHeight;
-      }, 1000 * 0.1);
+      }, 1000 * 0.3);
     } else {
       main.style.height = `calc(100% - 6rem)`;
       main.scrollTop = main.scrollHeight;
     }
+
     return () => {
       clearTimeout(timer);
     };
-  }, [showBet, betHeight]);
+  }, [showBet]);
 
   // 投注
   const toBet = async () => {
     setShowBet(!showBet);
-    await sleep(110);
-    const height = (document.querySelector('.betbox') as HTMLDivElement)
-      .offsetHeight;
-    setBetHeight(height);
   };
 
   return (
@@ -100,7 +92,7 @@ function SendBar() {
         {/* <Emoji style={{ width: '3rem', height: '3rem' }} /> */}
         <SendMsg style={{ width: '3rem', height: '3rem' }} onClick={sendText} />
       </div>
-      <Bet showBet={showBet} isHashNiuNiu={false}>
+      <Bet showBet={showBet}>
         <>
           {/* 单双 */}
           {show ? <ODD /> : undefined}

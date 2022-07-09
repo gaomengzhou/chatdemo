@@ -4,14 +4,12 @@ import styles from './Bet.module.scss';
 const Bet: React.FC<{
   showBet: boolean;
   children?: JSX.Element;
-  isHashNiuNiu?: boolean;
-}> = ({ children, showBet, isHashNiuNiu }) => {
+}> = ({ children, showBet }) => {
   return (
     <div
       className={`
         ${styles.container}
-        ${showBet && !isHashNiuNiu && styles['auto-height-hash-universal']} ${
-        showBet && isHashNiuNiu && styles['auto-height-hashniuniu']
+        ${showBet && styles['auto-height-universal']}
       } betbox`}
     >
       <BetHeader />
