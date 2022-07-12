@@ -1,6 +1,46 @@
 .quick-bet {
   font-family: PingFangSC-Regular;
   box-sizing: border-box;
+  .inpdiv {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    input {
+      box-sizing: border-box;
+      width: 100%;
+      height: 3rem;
+      padding: 0 1rem;
+      transition: 0.8s;
+      border: 1px solid #999;
+      text-align: right;
+      &::-ms-input-placeholder {
+        text-align: center;
+      }
+      &::-webkit-input-placeholder {
+        text-align: center;
+      }
+    }
+    span {
+      transition: 0.8s;
+      color: red;
+      align-self: flex-end;
+      margin-top: 0.5rem;
+      opacity: 0;
+    }
+    .show-text {
+      opacity: 1;
+    }
+    .onFocus {
+      outline: 0;
+      border: 1px solid #0078d7;
+      border-radius: 0.2rem;
+    }
+    .onwrong {
+      outline: 0;
+      border: 1px solid red;
+      border-radius: 0.2rem;
+    }
+  }
   .title {
     padding-top: 1rem;
     display: flex;
@@ -53,10 +93,10 @@
     margin-bottom: 1rem;
     button {
       border: 0;
-      width: 8rem;
-      height: 3rem;
+      width: 100%;
+      height: 4rem;
       background-color: #0078d7;
-      border-radius: 1.5rem;
+      border-radius: 2rem;
       color: #fff;
       &:active {
         background-color: #439be4;

@@ -1,18 +1,15 @@
 .background-color {
   height: 100%;
   background-image: linear-gradient(111deg, #f6ffa5, #5dad51, #f6ffa5);
-
   .container {
     height: 100%;
     background: url('../../assets/images/telegramBackground.svg') no-repeat
       center;
     background-size: cover;
-
     :global(.adm-notice-bar) {
       background-color: #fff;
       border-color: #fff;
     }
-
     .main {
       transition: 0.3s;
       box-sizing: border-box;
@@ -25,5 +22,18 @@
         display: none;
       }
     }
+    .move-main {
+      transform: translate(0, -35.5rem);
+    }
+  }
+
+  .to-bottom {
+    position: fixed;
+    right: 0;
+    bottom: 6rem;
+    z-index: 100;
+  }
+  .to-bottom-betopen {
+    bottom: 41.5rem;
   }
 }

@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useAppSelector } from 'redux/hook';
 import QuickBet from '../QuickBet/QuickBet';
-import styles from './BaiJiaLe.module.scss';
+import styles from './NiuNiu100.module.scss';
 
-function BaiJiaLe() {
+function NiuNiu100() {
   // 是否disable Input框
   const [isDisable, setIsDisable] = useState(true);
   // 是否清除所选数据
   const initalsendBarData = useAppSelector((s) => s.chatData.initalsendBarData);
   const [data, setData] = useState([
-    { name: '庄家', id: 1, checked: false, bet: '.01' },
-    { name: '闲家', id: 2, checked: false, bet: '.02' },
-    { name: '庄对子', id: 3, checked: false, bet: '.03' },
-    { name: '闲对子', id: 4, checked: false, bet: '.04' },
-    { name: '老虎', id: 5, checked: false, bet: '.07' },
-    { name: '小老虎', id: 6, checked: false, bet: '.05' },
-    { name: '大老虎', id: 7, checked: false, bet: '.06' },
-    { name: '和局', id: 8, checked: false, bet: '.08' },
+    { name: '上庄', id: 1, checked: false, bet: '.05' },
+    { name: '闲A', id: 2, checked: false, bet: '.01' },
+    { name: '闲B', id: 3, checked: false, bet: '.02' },
+    { name: '闲C', id: 4, checked: false, bet: '.03' },
+    { name: '闲D', id: 5, checked: false, bet: '.04' },
+    { name: '吃A', id: 6, checked: false, bet: '.06' },
+    { name: '吃B', id: 7, checked: false, bet: '.07' },
+    { name: '吃C', id: 8, checked: false, bet: '.08' },
+    { name: '吃D', id: 9, checked: false, bet: '.09' },
   ]);
   // 玩法赔率
   const [betInfo, setBetInfo] = useState({ gameName: '', bet: '' });
@@ -70,4 +71,4 @@ function BaiJiaLe() {
     </>
   );
 }
-export default BaiJiaLe;
+export default NiuNiu100;

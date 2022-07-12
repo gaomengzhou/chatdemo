@@ -1,23 +1,7 @@
 import avatar from 'assets/images/avatar.png';
-import { ReactComponent as ToBottom } from 'assets/images/icon-bottmo.svg';
-import { useAppSelector } from 'redux/hook';
-import { RootState } from 'redux/store';
 import styles from './MessageList.module.scss';
 
-function MessageList({
-  list,
-  showGoToBottom,
-}: {
-  list: { [key: string]: any }[];
-  showGoToBottom: boolean;
-}) {
-  const showBet = useAppSelector((s: RootState) => s.chatData.showBet);
-
-  const goToBottom = () => {
-    const scrolls = document.querySelector('.scroll') as HTMLDivElement;
-    console.log(scrolls.scrollTop, scrolls.scrollHeight, scrolls.offsetHeight);
-  };
-
+function MessageList({ list }: { list: { [key: string]: any }[] }) {
   return (
     <div className={styles.container}>
       {list &&
@@ -47,21 +31,6 @@ function MessageList({
             </div>
           );
         })}
-      {showGoToBottom && (
-        <div
-          className={`${styles['to-bottom']} ${
-            showBet && styles['to-bottom-betopen']
-          }`}
-          onClick={goToBottom}
-        >
-          <ToBottom
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 }

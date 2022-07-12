@@ -8,12 +8,14 @@ import styles from './SendBar.module.scss';
 import Bet from '../component/Bet/Bet';
 import ODD from '../component/ODD/ODD';
 import BaiJiaLe from '../component/BaiJiaLe/BaiJiaLe';
-import NiuNiu from '../component/NiuNiu/NiuNiu';
+import NiuNiu100 from '../component/NiuNiu100/NiuNiu100';
 import HashNiuNiu from '../component/HashNiuNiu/HashNiuNiu';
 
 const show = false;
 
-function SendBar() {
+function SendBar(props: any) {
+  const { walletInfo } = props;
+  console.log(walletInfo);
   // 聊天信息
   const [value, setValue] = useState<string>('');
   // 显示隐藏投注
@@ -30,34 +32,32 @@ function SendBar() {
       });
       return;
     }
-    dispatch(
-      sedMsg({
-        id: new Date().getTime(),
-        messageText: value,
-        type: 1,
-        nickName: '自己',
-      })
-    );
-    socket.send(value);
+    const params = {
+      id: new Date().getTime(),
+      messageText: value,
+      type: 1,
+      nickName: '自己',
+    };
+    dispatch(sedMsg(params));
+    socket.send(JSON.stringify(params));
     setValue('');
   };
 
   useEffect(() => {
     const main = document.querySelector('.scroll') as HTMLDivElement;
     main.onclick = () => {
-      // setShowBet(false);
       dispatch(setBetStatu(false));
     };
   }, [dispatch]);
 
   useLayoutEffect(() => {
-    let timer: any = null;
+    const timer: any = null;
     const main = document.querySelector('.scroll') as HTMLDivElement;
     if (showBet) {
-      main.style.height = `calc(100% - 6rem - 28.5rem)`;
-      timer = setTimeout(() => {
-        main.scrollTop = main.scrollHeight;
-      }, 1000 * 0.3);
+      // main.style.height = `calc(100% - 6rem - 35.5rem)`;
+      // timer = setTimeout(() => {
+      //   main.scrollTop = main.scrollHeight;
+      // }, 1000 * 0.3);
     } else {
       main.style.height = `calc(100% - 6rem)`;
       main.scrollTop = main.scrollHeight;
@@ -66,7 +66,7 @@ function SendBar() {
     return () => {
       clearTimeout(timer);
     };
-  }, [showBet]);
+  }, [dispatch, showBet]);
 
   // 投注
   const toBet = async () => {
@@ -74,7 +74,11 @@ function SendBar() {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={`${styles.container} ${
+        showBet && styles['auto-height-universal']
+      }`}
+    >
       <div className={styles['send-input']}>
         <div className={styles.bet} onClick={toBet}>
           {showBet ? '取消' : '投注'}
@@ -91,7 +95,6 @@ function SendBar() {
           value={value}
           onChange={setValue}
         />
-        {/* <Emoji style={{ width: '3rem', height: '3rem' }} /> */}
         <SendMsg style={{ width: '3rem', height: '3rem' }} onClick={sendText} />
       </div>
       <Bet showBet={showBet}>
@@ -100,8 +103,8 @@ function SendBar() {
           {show ? <ODD /> : undefined}
           {/* 百家乐 */}
           {show ? <BaiJiaLe /> : undefined}
-          {/* 牛牛 */}
-          {show ? <NiuNiu /> : undefined}
+          {/* 百人牛牛 */}
+          {show ? <NiuNiu100 /> : undefined}
           {/* 哈希牛牛 */}
           {!show ? <HashNiuNiu /> : undefined}
         </>

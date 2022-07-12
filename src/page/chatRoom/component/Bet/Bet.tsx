@@ -2,14 +2,13 @@ import BetHeader from '../BetHeader/BetHeader';
 import styles from './Bet.module.scss';
 
 const Bet: React.FC<{
-  showBet: boolean;
+  showBet?: boolean;
   children?: JSX.Element;
-}> = ({ children, showBet }) => {
+}> = ({ children }) => {
   return (
     <div
       className={`
         ${styles.container}
-        ${showBet && styles['auto-height-universal']}
       } betbox`}
     >
       <BetHeader />

@@ -8,7 +8,6 @@
   color: #333;
   width: 80%;
   height: 38rem;
-  //   transition: 0.3s;
   background-color: #fff;
   border-radius: 0.5rem;
   h3 {
@@ -79,10 +78,7 @@
     }
   }
 }
-.height {
-  right: 0;
-  transition: 0.3s;
-}
+
 :global(.animate__bounceOut) {
   --animate-duration: 3s;
 }

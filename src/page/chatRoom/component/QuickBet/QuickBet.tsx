@@ -1,60 +1,156 @@
-import { Input, Mask } from 'antd-mobile';
+import { Toast } from 'antd-mobile';
 import { ReactComponent as Refresh } from 'assets/images/refresh.svg';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+  openBetConfrmModal,
+  setBetConfirmPayload,
+  setInitalsendBarData,
+} from 'redux/chatRoom/slice';
+import { useAppDispatch, useAppSelector } from 'redux/hook';
 import { useThrottleFn } from 'utils/tools/method';
-import BetModal from '../BetModal/BetModal';
 import styles from './QuickBet.module.scss';
 
-const QuickBet: React.FC<{ isDisable?: boolean }> = ({ isDisable = false }) => {
+const QuickBet: React.FC<{
+  isDisable?: boolean;
+  betInfo: { gameName: string; bet: string };
+  setBetInfo: Dispatch<
+    SetStateAction<{
+      gameName: string;
+      bet: string;
+    }>
+  >;
+}> = ({ isDisable = false, betInfo, setBetInfo }) => {
+  // 是否清除所选数据
+  const initalsendBarData = useAppSelector((s) => s.chatData.initalsendBarData);
+  const dispatch = useAppDispatch();
+  // 节流
   const throttleFn = useThrottleFn();
+  // 超出金额范围
+  const [showError, setShowError] = useState(false);
+  // 是否聚焦
+  const [isOnFocus, setIsOnFocus] = useState(false);
   // Input框里的金额
-  const [amount, setAmount] = useState<string | undefined>('');
+  const [amount, setAmount] = useState<string | undefined | number>('');
   // 快捷金额
-  const [money, setMoney] = useState([
+  const [dataSource, setDataSource] = useState([
     { num: 10, id: 1, checked: false },
     { num: 20, id: 2, checked: false },
     { num: 40, id: 3, checked: false },
     { num: 80, id: 4, checked: false },
     { num: 100, id: 5, checked: false },
   ]);
-  const [visible, setVisible] = useState(false);
+
+  // 快捷金额初始值
+  const currAmount = useRef(0);
+
+  // 是否清除所选数据
+  useEffect(() => {
+    if (!initalsendBarData) return;
+    const arr = dataSource.map((item) => {
+      item.checked = false;
+      return item;
+    });
+    setDataSource(arr);
+    setAmount('');
+    currAmount.current = 0;
+    setBetInfo({ ...betInfo, bet: '' });
+    dispatch(setInitalsendBarData(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initalsendBarData]);
+
+  // 输入框监听传来的props赔率
+  useEffect(() => {
+    setAmount(betInfo.bet);
+    currAmount.current = 0;
+    const arr = dataSource.map((item) => {
+      item.checked = false;
+      return item;
+    });
+    setDataSource(arr);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [betInfo]);
+
+  // 监听input状态,手动点击快捷金额只有在这里监听，顺便代替onInput Event。
+  useEffect(() => {
+    if ((amount && +amount < 10) || (amount && +amount > 20100)) {
+      setShowError(true);
+    } else {
+      setShowError(false);
+    }
+  }, [amount]);
+
   // 选择金额
   const selectAmount = (data: {
     num: number;
     id: number;
     checked: boolean;
   }): void => {
-    setAmount(data.num.toString());
-    const arr = money.map((item) => {
+    currAmount.current += data.num;
+    setAmount(currAmount.current + (betInfo.bet || ''));
+
+    const arr = dataSource.map((item) => {
       if (item.id === data.id) {
-        item.checked = !item.checked;
-        if (!item.checked) {
-          setAmount('');
-        }
+        item.checked = true;
       } else {
         item.checked = false;
       }
       return item;
     });
-    setMoney(arr);
+    setDataSource(arr);
   };
+
   // 输入金额
-  const onChangeAmount = (val: string) => {
-    setAmount(val);
-    const arr = money.map((item) => {
+  const onChangeAmount = (e: any) => {
+    setAmount(e.target.value);
+    const arr = dataSource.map((item) => {
       item.checked = false;
       return item;
     });
-    setMoney(arr);
+    setDataSource(arr);
   };
 
   // 确认提交
   const modalAlert = () => {
-    setVisible(true);
+    if (showError) return Toast.show('超出金额范围');
+    /** 存储下注信息到Redux
+     * @param gameName 投注游戏名称
+     * @param betName 投注项
+     * @param betAmount 投注金额
+     * @param walletAddress 我的钱包地址
+     * @param betAddress 投注地址
+     */
+    dispatch(
+      setBetConfirmPayload({
+        gameName: '百人牛牛',
+        betName: betInfo.gameName,
+        betAmount: amount,
+        walletAddress: 'rwerwer23r32r',
+        betAddress: 'werwerr33232323',
+      })
+    );
+    // 打开确认下注弹框
+    dispatch(openBetConfrmModal(true));
   };
 
   return (
     <div className={`${styles['quick-bet']}`}>
+      <div className={styles.inpdiv}>
+        <input
+          className={`${isOnFocus && styles.onFocus} ${
+            showError && styles.onwrong
+          }`}
+          type='number'
+          value={amount}
+          onInput={onChangeAmount}
+          placeholder='输入投注金额(10-20100)'
+          onFocus={() => setIsOnFocus(true)}
+          onBlur={() => setIsOnFocus(false)}
+        />
+        <span className={`${showError && styles['show-text']}`}>
+          超出金额范围
+        </span>
+      </div>
+
       <div className={styles.title}>
         <div className={styles.left}>选择快捷投注金额</div>
         <div className={styles.right}>
@@ -65,7 +161,7 @@ const QuickBet: React.FC<{ isDisable?: boolean }> = ({ isDisable = false }) => {
         </div>
       </div>
       <div className={styles.amount}>
-        {money.map((item) => {
+        {dataSource.map((item) => {
           return (
             <div
               className={`${item.checked && styles.active}`}
@@ -79,22 +175,6 @@ const QuickBet: React.FC<{ isDisable?: boolean }> = ({ isDisable = false }) => {
         })}
       </div>
       <div className={styles.payInput}>
-        <Input
-          value={amount}
-          onChange={onChangeAmount}
-          style={{
-            backgroundColor: '#f6f6f6',
-            width: '25rem',
-            height: '3rem',
-            border: '0.1rem solid #e9e9e9',
-            fontSize: '1rem',
-            paddingLeft: '0.5rem',
-          }}
-          type='number'
-          min={10}
-          max={20100}
-          placeholder='输入投注金额(10-20100)'
-        />
         <button
           onClick={modalAlert}
           disabled={isDisable || !amount}
@@ -105,22 +185,6 @@ const QuickBet: React.FC<{ isDisable?: boolean }> = ({ isDisable = false }) => {
           提交
         </button>
       </div>
-      <Mask
-        visible={visible}
-        afterClose={() => console.log('关闭')}
-        onMaskClick={() => setVisible(false)}
-      >
-        <BetModal
-          title='投注确认'
-          gameName='欢乐单双'
-          visible={visible}
-          betItem='双'
-          betAmount='100.02'
-          walletAddress='0xwefi23jio32jdioj32iojd2o3id'
-          betAddress='0xwefi23sdfsdfsd3id'
-          setVisible={setVisible}
-        />
-      </Mask>
     </div>
   );
 };

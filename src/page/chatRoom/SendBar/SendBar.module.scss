@@ -1,7 +1,12 @@
 .container {
+  transition: 0.3s;
   background-color: #f1f2f3;
   min-height: 6rem;
   width: 100%;
+  position: fixed;
+  bottom: -35.5rem;
+  right: 0;
+  left: 0;
   overflow: hidden;
   .send-input {
     height: 6rem;
@@ -24,4 +29,7 @@
       line-height: 3rem;
     }
   }
+}
+.auto-height-universal {
+  transform: translate(0, -35.5rem);
 }

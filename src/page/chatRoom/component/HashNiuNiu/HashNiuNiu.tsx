@@ -6,16 +6,20 @@ function HashNiuNiu() {
   // 是否disable Input框
   const [isDisable] = useState(false);
   const [data] = useState({ name: '闲家', id: 1, checked: true });
-
+  // 玩法赔率
+  const [betInfo, setBetInfo] = useState({ gameName: '哈希牛牛', bet: '' });
   return (
     <>
       <div className={styles.main}>
-        <p>投注项：</p>
         <div className={`${styles.oddbtn} ${data.checked && styles.active}`}>
           {data.name}
         </div>
       </div>
-      <QuickBet isDisable={isDisable} />
+      <QuickBet
+        isDisable={isDisable}
+        betInfo={betInfo}
+        setBetInfo={setBetInfo}
+      />
     </>
   );
 }

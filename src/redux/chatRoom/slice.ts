@@ -6,15 +6,34 @@ import {
 } from '@reduxjs/toolkit';
 import { Toast } from 'antd-mobile';
 import { AppThunk, RootState } from 'redux/store';
-// import logo from "assets/images/logo.svg";
+
+interface betConfirmPayloadProps {
+  gameName: string;
+  betName: string;
+  betAmount: string | number;
+  walletAddress: string;
+  betAddress: string;
+}
 interface ChatState<T = any> {
   chatList: T[];
   notice?: string;
   showBet: boolean;
+  betConfirmModal: boolean;
+  betConfirmPayload: betConfirmPayloadProps;
+  initalsendBarData: boolean;
 }
 const initialState: ChatState = {
   chatList: [],
   showBet: false,
+  betConfirmModal: false,
+  betConfirmPayload: {
+    gameName: '-',
+    betName: '-',
+    betAmount: '-',
+    walletAddress: '-',
+    betAddress: '-',
+  },
+  initalsendBarData: false,
 };
 
 export const getChatHistory = createAsyncThunk(
@@ -51,6 +70,15 @@ const chatData = createSlice({
     },
     setBetStatu: (state, action) => {
       state.showBet = action.payload;
+    },
+    openBetConfrmModal: (state, action) => {
+      state.betConfirmModal = action.payload;
+    },
+    setBetConfirmPayload: (state, { payload }) => {
+      state.betConfirmPayload = payload;
+    },
+    setInitalsendBarData: (state, { payload }) => {
+      state.initalsendBarData = payload;
     },
   },
   extraReducers: (builder) => {
@@ -100,7 +128,13 @@ const chatData = createSlice({
   },
 });
 
-export const { sedMsg, setBetStatu } = chatData.actions;
+export const {
+  sedMsg,
+  setBetStatu,
+  openBetConfrmModal,
+  setBetConfirmPayload,
+  setInitalsendBarData,
+} = chatData.actions;
 
 export const MsgList = (state: RootState) => state.chatData.chatList;
 // 也可以手动编写 thunk，其中可能包含同步和异步逻辑。

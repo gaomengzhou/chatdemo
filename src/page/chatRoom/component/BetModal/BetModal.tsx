@@ -1,38 +1,52 @@
-import styles from './BetModal.module.scss';
 import 'animate.css';
-
+import { openBetConfrmModal, setInitalsendBarData } from 'redux/chatRoom/slice';
+import { useAppDispatch } from 'redux/hook';
+import styles from './BetModal.module.scss';
 /**
  * @param title 标题名称
  * @param gameName 投注游戏名称
- * @param betItem 投注项
+ * @param betName 投注项
  * @param betAmount 投注金额
  * @param walletAddress 我的钱包地址
  * @param betAddress 投注地址
  * @param visible 显示/关闭弹框和控制动画的类属性需要的依赖
- * @param setVisible 关闭弹框的useState
  */
 interface BetModalProps {
   title: string;
   gameName: string;
-  betItem: string;
+  betName: string;
   betAmount: string | number;
   walletAddress: string;
   betAddress: string;
   visible?: boolean;
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const BetModal: React.FC<BetModalProps> = ({
   title,
   gameName,
   visible,
-  betItem,
+  betName,
   betAmount,
   walletAddress,
   betAddress,
-  setVisible,
 }) => {
+  const dispatch = useAppDispatch();
   const handleSubmit = () => {
-    setVisible(false);
+    const payload = {
+      title,
+      gameName,
+      visible,
+      betName,
+      betAmount,
+      walletAddress,
+      betAddress,
+    };
+    console.log('payload:', payload);
+
+    // 请求成功后的操作 。。。。。。
+    // 要求清空sendBar数据
+    dispatch(setInitalsendBarData(true));
+    // 关闭弹框
+    dispatch(openBetConfrmModal(false));
   };
   return (
     <div
@@ -50,7 +64,7 @@ const BetModal: React.FC<BetModalProps> = ({
           <div className={styles.options}>
             <div>
               <p>投注项</p>
-              <span>{betItem}</span>
+              <span>{betName}</span>
             </div>
             <div>
               <p>投注金额</p>
@@ -69,7 +83,9 @@ const BetModal: React.FC<BetModalProps> = ({
           </div>
         </div>
         <footer className={styles.footer}>
-          <button onClick={() => setVisible(false)}>取消</button>
+          <button onClick={() => dispatch(openBetConfrmModal(false))}>
+            取消
+          </button>
           <button onClick={handleSubmit}>提交注意</button>
         </footer>
       </div>
