@@ -20,7 +20,7 @@ interface ChatState<T = any> {
   showBet: boolean;
   betConfirmModal: boolean;
   betConfirmPayload: betConfirmPayloadProps;
-  initalsendBarData: boolean;
+  initialSendBarData: boolean;
 }
 const initialState: ChatState = {
   chatList: [],
@@ -33,7 +33,7 @@ const initialState: ChatState = {
     walletAddress: '-',
     betAddress: '-',
   },
-  initalsendBarData: false,
+  initialSendBarData: false,
 };
 
 export const getChatHistory = createAsyncThunk(
@@ -78,7 +78,7 @@ const chatData = createSlice({
       state.betConfirmPayload = payload;
     },
     setInitalsendBarData: (state, { payload }) => {
-      state.initalsendBarData = payload;
+      state.initialSendBarData = payload;
     },
   },
   extraReducers: (builder) => {

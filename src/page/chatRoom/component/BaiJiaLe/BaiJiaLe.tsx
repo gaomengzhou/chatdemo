@@ -7,7 +7,9 @@ function BaiJiaLe() {
   // 是否disable Input框
   const [isDisable, setIsDisable] = useState(true);
   // 是否清除所选数据
-  const initalsendBarData = useAppSelector((s) => s.chatData.initalsendBarData);
+  const initialSendBarData = useAppSelector(
+    (s) => s.chatData.initialSendBarData
+  );
   const [data, setData] = useState([
     { name: '庄家', id: 1, checked: false, bet: '.01' },
     { name: '闲家', id: 2, checked: false, bet: '.02' },
@@ -22,7 +24,7 @@ function BaiJiaLe() {
   const [betInfo, setBetInfo] = useState({ gameName: '', bet: '' });
 
   useEffect(() => {
-    if (!initalsendBarData) return;
+    if (!initialSendBarData) return;
     const arr = data.map((item) => {
       item.checked = false;
       return item;
@@ -33,7 +35,7 @@ function BaiJiaLe() {
     // 因为在QuickBet组件有调用，避免重复调用。
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initalsendBarData]);
+  }, [initialSendBarData]);
 
   const choose = (source: typeof data[0]) => {
     setBetInfo({ gameName: source.name, bet: source.bet });

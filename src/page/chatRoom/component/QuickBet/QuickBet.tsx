@@ -21,7 +21,9 @@ const QuickBet: React.FC<{
   >;
 }> = ({ isDisable = false, betInfo, setBetInfo }) => {
   // 是否清除所选数据
-  const initalsendBarData = useAppSelector((s) => s.chatData.initalsendBarData);
+  const initialSendBarData = useAppSelector(
+    (s) => s.chatData.initialSendBarData
+  );
   const dispatch = useAppDispatch();
   // 节流
   const throttleFn = useThrottleFn();
@@ -45,7 +47,7 @@ const QuickBet: React.FC<{
 
   // 是否清除所选数据
   useEffect(() => {
-    if (!initalsendBarData) return;
+    if (!initialSendBarData) return;
     const arr = dataSource.map((item) => {
       item.checked = false;
       return item;
@@ -56,7 +58,7 @@ const QuickBet: React.FC<{
     setBetInfo({ ...betInfo, bet: '' });
     dispatch(setInitalsendBarData(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initalsendBarData]);
+  }, [initialSendBarData]);
 
   // 输入框监听传来的props赔率
   useEffect(() => {
@@ -89,11 +91,7 @@ const QuickBet: React.FC<{
     setAmount(currAmount.current + (betInfo.bet || ''));
 
     const arr = dataSource.map((item) => {
-      if (item.id === data.id) {
-        item.checked = true;
-      } else {
-        item.checked = false;
-      }
+      item.checked = item.id === data.id;
       return item;
     });
     setDataSource(arr);

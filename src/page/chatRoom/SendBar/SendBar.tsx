@@ -7,7 +7,7 @@ import { ReactComponent as SendMsg } from 'assets/images/icon-send.svg';
 import styles from './SendBar.module.scss';
 import Bet from '../component/Bet/Bet';
 import ODD from '../component/ODD/ODD';
-import BaiJiaLe from '../component/BaiJiaLe/BaiJiaLe';
+import TigerBaiJiaLe from '../component/TigerBaiJiaLe/TigerBaiJiaLe';
 import NiuNiu100 from '../component/NiuNiu100/NiuNiu100';
 import HashNiuNiu from '../component/HashNiuNiu/HashNiuNiu';
 
@@ -102,7 +102,7 @@ function SendBar(props: any) {
           {/* 单双 */}
           {show ? <ODD /> : undefined}
           {/* 百家乐 */}
-          {show ? <BaiJiaLe /> : undefined}
+          {show ? <TigerBaiJiaLe /> : undefined}
           {/* 百人牛牛 */}
           {show ? <NiuNiu100 /> : undefined}
           {/* 哈希牛牛 */}
