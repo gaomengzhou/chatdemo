@@ -14,13 +14,25 @@ interface betConfirmPayloadProps {
   walletAddress: string;
   betAddress: string;
 }
+interface walletInfoType {
+  address: string;
+  balance: string;
+  groupName: string;
+  walletName: string;
+  toAddress: string;
+  channelType: string;
+  userType: string;
+  TrxWalletName: string;
+}
 interface ChatState<T = any> {
   chatList: T[];
   notice?: string;
   showBet: boolean;
   betConfirmModal: boolean;
   betConfirmPayload: betConfirmPayloadProps;
-  initalsendBarData: boolean;
+  initialSendBarData: boolean;
+  walletBalance: string;
+  walletInfo: walletInfoType;
 }
 const initialState: ChatState = {
   chatList: [],
@@ -33,7 +45,18 @@ const initialState: ChatState = {
     walletAddress: '-',
     betAddress: '-',
   },
-  initalsendBarData: false,
+  walletInfo: {
+    address: '',
+    balance: '0',
+    groupName: '',
+    walletName: '',
+    toAddress: '',
+    channelType: '',
+    userType: '',
+    TrxWalletName: '',
+  },
+  initialSendBarData: false,
+  walletBalance: '0',
 };
 
 export const getChatHistory = createAsyncThunk(
@@ -41,16 +64,21 @@ export const getChatHistory = createAsyncThunk(
   async (payload: {
     page: number;
     size: number;
-    isPullDwon?: boolean;
+    isPullDown?: boolean;
+    timeStamp?: string | undefined;
   }): Promise<any> => {
-    const result = await $fetch.post('/chat/query/history', {
-      body: {
-        pageNo: payload.page,
-        pageSize: payload.size,
-        gameType: window.location.href.split('?id=')[1] || 1,
-      },
-    });
-    if (payload.isPullDwon) return { ...result, isPullDwon: true };
+    const result = await $fetch.post(
+      '/wallet-decentralized-api/chat-client/h5ChatHistory/list',
+      {
+        body: {
+          pageNo: 1,
+          pageSize: payload.size,
+          gameType: window.location.href.split('?id=')[1] || 1,
+          startTimes: payload.timeStamp || '',
+        },
+      }
+    );
+    if (payload.isPullDown) return { ...result, isPullDown: true };
     return result;
   }
 );
@@ -68,17 +96,24 @@ const chatData = createSlice({
       }
       state.chatList.push(action.payload);
     },
-    setBetStatu: (state, action) => {
+    setBetStatus: (state, action) => {
       state.showBet = action.payload;
     },
-    openBetConfrmModal: (state, action) => {
+    openBetConfirmModal: (state, action) => {
       state.betConfirmModal = action.payload;
     },
     setBetConfirmPayload: (state, { payload }) => {
       state.betConfirmPayload = payload;
     },
-    setInitalsendBarData: (state, { payload }) => {
-      state.initalsendBarData = payload;
+    setInitialSendBarData: (state, { payload }) => {
+      state.initialSendBarData = payload;
+    },
+    setWalletBalance: (state, { payload }) => {
+      state.walletBalance = payload;
+    },
+    setWalletInfo: (state, { payload }) => {
+      state.walletInfo = payload;
+      state.walletBalance = payload.balance;
     },
   },
   extraReducers: (builder) => {
@@ -97,11 +132,11 @@ const chatData = createSlice({
           action: PayloadAction<{
             page: number;
             size: number;
-            isPullDwon?: boolean;
+            isPullDown?: boolean;
             data?: any;
           }>
         ) => {
-          if (action.payload.isPullDwon) {
+          if (action.payload.isPullDown) {
             state.chatList.unshift(...action.payload.data.records);
           } else {
             state.chatList = action.payload.data.records;
@@ -130,10 +165,12 @@ const chatData = createSlice({
 
 export const {
   sedMsg,
-  setBetStatu,
-  openBetConfrmModal,
+  setBetStatus,
+  openBetConfirmModal,
   setBetConfirmPayload,
-  setInitalsendBarData,
+  setInitialSendBarData,
+  setWalletBalance,
+  setWalletInfo,
 } = chatData.actions;
 
 export const MsgList = (state: RootState) => state.chatData.chatList;

@@ -2,12 +2,14 @@ import { Toast } from 'antd-mobile';
 import { ReactComponent as Refresh } from 'assets/images/refresh.svg';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import {
-  openBetConfrmModal,
+  openBetConfirmModal,
   setBetConfirmPayload,
-  setInitalsendBarData,
+  setInitialSendBarData,
+  setWalletBalance,
 } from 'redux/chatRoom/slice';
 import { useAppDispatch, useAppSelector } from 'redux/hook';
 import { useThrottleFn } from 'utils/tools/method';
+import { getPosition, loadBridge, isAndroid } from 'utils/tools/tool';
 import styles from './QuickBet.module.scss';
 
 const QuickBet: React.FC<{
@@ -20,13 +22,31 @@ const QuickBet: React.FC<{
     }>
   >;
 }> = ({ isDisable = false, betInfo, setBetInfo }) => {
-  // 是否清除所选数据
-  const initalsendBarData = useAppSelector((s) => s.chatData.initalsendBarData);
+  // 是否旋转初始值
+  const [rotate, setRotate] = useState(false);
   const dispatch = useAppDispatch();
+  // 安卓刷新余额回调
+  const queryNativeBalanceCallback = (response: any) => {
+    if (response) {
+      setRotate(false);
+      dispatch(setWalletBalance(response));
+      console.log('response');
+    }
+  };
+  // 是否清除所选数据
+  const initalsendBarData = useAppSelector(
+    (s) => s.chatData.initialSendBarData
+  );
+  // 从原生获取钱包余额
+  const walletBalance = useAppSelector((s) => s.chatData.walletBalance);
+  const walletInfo = useAppSelector((s) => s.chatData.walletInfo);
   // 节流
   const throttleFn = useThrottleFn();
   // 超出金额范围
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState({
+    flag: false,
+    text: '超出金额范围',
+  });
   // 是否聚焦
   const [isOnFocus, setIsOnFocus] = useState(false);
   // Input框里的金额
@@ -43,6 +63,8 @@ const QuickBet: React.FC<{
   // 快捷金额初始值
   const currAmount = useRef(0);
 
+  // 刷新按钮
+  const refreshBtn = useRef(null);
   // 是否清除所选数据
   useEffect(() => {
     if (!initalsendBarData) return;
@@ -54,7 +76,7 @@ const QuickBet: React.FC<{
     setAmount('');
     currAmount.current = 0;
     setBetInfo({ ...betInfo, bet: '' });
-    dispatch(setInitalsendBarData(false));
+    dispatch(setInitialSendBarData(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initalsendBarData]);
 
@@ -72,12 +94,25 @@ const QuickBet: React.FC<{
 
   // 监听input状态,手动点击快捷金额只有在这里监听，顺便代替onInput Event。
   useEffect(() => {
-    if ((amount && +amount < 10) || (amount && +amount > 20100)) {
-      setShowError(true);
+    if (!amount) return;
+    if (+amount && +amount > +walletBalance) {
+      setShowError({
+        flag: true,
+        text: '余额不足',
+      });
+    } else if ((amount && +amount < 10) || (amount && +amount > 20100)) {
+      setShowError({
+        flag: true,
+        text: '超出金额范围',
+      });
     } else {
-      setShowError(false);
+      setShowError({
+        flag: false,
+        text: '',
+      });
     }
-  }, [amount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount, walletBalance]);
 
   // 选择金额
   const selectAmount = (data: {
@@ -89,11 +124,7 @@ const QuickBet: React.FC<{
     setAmount(currAmount.current + (betInfo.bet || ''));
 
     const arr = dataSource.map((item) => {
-      if (item.id === data.id) {
-        item.checked = true;
-      } else {
-        item.checked = false;
-      }
+      item.checked = item.id === data.id;
       return item;
     });
     setDataSource(arr);
@@ -101,7 +132,43 @@ const QuickBet: React.FC<{
 
   // 输入金额
   const onChangeAmount = (e: any) => {
+    const val = e.target.value;
+    const len = e.target.value.length;
+    if (
+      !/[0-9]/.test(e.nativeEvent.data) &&
+      e.nativeEvent.data !== '' &&
+      e.nativeEvent.data != null &&
+      walletInfo.channelType !== '2'
+    ) {
+      // const len = e.target.value.length;
+      // e.target.selectionStart = len - 3;
+      // e.target.selectionEnd = len - 3;
+      e.target.value = val.replace(/[^0-9]/g, '');
+      return;
+    }
+    if (walletInfo.channelType === '2') {
+      e.target.value = val
+        .replace(/[^\d^.]+/g, '')
+        .replace(/\.{6,}/g, '.')
+        .replace('.', '$#$')
+        .replace(/\./g, '')
+        .replace('$#$', '.')
+        .replace(/^(-)*(\d+)\.(\d\d\d\d\d\d).*$/, '$1$2.$3')
+        .replace(/^\./g, '');
+    }
+
+    if (
+      !isDisable &&
+      e.target.selectionStart > len - 3 &&
+      walletInfo.channelType !== '2'
+    ) {
+      e.target.selectionStart = len - 3;
+      e.target.selectionEnd = len - 3;
+      return;
+    }
+
     setAmount(e.target.value);
+    currAmount.current = 0;
     const arr = dataSource.map((item) => {
       item.checked = false;
       return item;
@@ -109,9 +176,33 @@ const QuickBet: React.FC<{
     setDataSource(arr);
   };
 
+  // 聚焦输入框获取光标位置
+  const onFocusPosition = (e: any) => {
+    setIsOnFocus(true);
+    if (isDisable) return;
+    const pos = getPosition(e);
+    console.log(pos);
+  };
+  // 点击获取光标位置
+  const onClickPosition = (e: any) => {
+    if (isDisable) return;
+    const pos = getPosition(e);
+    console.log(pos);
+  };
+
+  const controlDelete = (e: any) => {
+    if (isDisable) return;
+    // const { value } = e.target;
+    if (+e.keyCode === 8 && walletInfo.channelType !== '2') {
+      const len = e.target.value.length;
+      e.target.selectionStart = len - 3;
+      e.target.selectionEnd = len - 3;
+    }
+  };
+
   // 确认提交
   const modalAlert = () => {
-    if (showError) return Toast.show('超出金额范围');
+    if (showError.flag) return Toast.show(showError.text);
     /** 存储下注信息到Redux
      * @param gameName 投注游戏名称
      * @param betName 投注项
@@ -129,25 +220,64 @@ const QuickBet: React.FC<{
       })
     );
     // 打开确认下注弹框
-    dispatch(openBetConfrmModal(true));
+    dispatch(openBetConfirmModal(true));
   };
+
+  // 刷新余额
+  const refreshBalance = () => {
+    setRotate(true);
+    const win = window as any;
+    if (win.iOSLoadJSSuccess) {
+      return loadBridge((bridge: any) => {
+        bridge.callHandler(
+          'queryNativeBalance',
+          { key: 'value' },
+          (response: any) => {
+            console.log('ios,queryNativeBalance');
+            // const { result } = response;
+            setRotate(false);
+            dispatch(setWalletBalance(response));
+            console.log(response);
+            // setWalletInfo(result);
+          }
+        );
+      });
+    }
+
+    if (isAndroid()) {
+      (window as any).queryNativeBalanceCallback = queryNativeBalanceCallback;
+      // loadBridege((bridge: any) => {
+      //   bridge.jsCallScanID(JSON.stringify(josn));
+      // });
+      loadBridge((bridge: any) => {
+        bridge.queryNativeBalance();
+      });
+    }
+  };
+
+  useEffect(() => {
+    refreshBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initalsendBarData]);
 
   return (
     <div className={`${styles['quick-bet']}`}>
       <div className={styles.inpdiv}>
         <input
           className={`${isOnFocus && styles.onFocus} ${
-            showError && styles.onwrong
+            showError.flag && styles.onwrong
           }`}
           type='number'
           value={amount}
           onInput={onChangeAmount}
-          placeholder='输入投注金额(10-20100)'
-          onFocus={() => setIsOnFocus(true)}
+          placeholder='USDT限额 10-20100'
+          onFocus={(element: any) => onFocusPosition(element)}
           onBlur={() => setIsOnFocus(false)}
+          onClick={(element: any) => onClickPosition(element)}
+          onKeyDown={(element: any) => controlDelete(element)}
         />
-        <span className={`${showError && styles['show-text']}`}>
-          超出金额范围
+        <span className={`${showError.flag && styles['show-text']}`}>
+          {showError.text}
         </span>
       </div>
 
@@ -155,9 +285,15 @@ const QuickBet: React.FC<{
         <div className={styles.left}>选择快捷投注金额</div>
         <div className={styles.right}>
           <p>
-            钱包余额：<span>{1022.32234561}</span>
+            钱包余额(USDT)<span>：{walletBalance}</span>
           </p>
-          <Refresh />
+          <Refresh
+            className={`${rotate && styles.transitionRotate} ${
+              styles.iconRefresh
+            }`}
+            ref={refreshBtn}
+            onClick={refreshBalance}
+          />
         </div>
       </div>
       <div className={styles.amount}>
@@ -165,7 +301,7 @@ const QuickBet: React.FC<{
           return (
             <div
               className={`${item.checked && styles.active}`}
-              onClick={() => throttleFn(() => selectAmount(item), 500)}
+              onClick={() => throttleFn(() => selectAmount(item), 300)}
               style={{ width: '6.5rem' }}
               key={item.id}
             >

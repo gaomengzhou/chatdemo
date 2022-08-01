@@ -7,11 +7,11 @@
   margin: auto;
   color: #333;
   width: 80%;
-  height: 38rem;
+  height: 33.5rem;
   background-color: #fff;
   border-radius: 0.5rem;
   h3 {
-    font-family: PingFangSC-Regular;
+    font-family: PingFangSC-Regular, serif;
     text-align: center;
     border-bottom: 1px solid #e7ecfd;
     height: 6rem;
@@ -22,7 +22,7 @@
     box-sizing: border-box;
     p {
       color: #9598aa;
-      font-family: PingFangSC-Regular;
+      font-family: PingFangSC-Regular, serif;
     }
     .top {
       display: flex;
@@ -51,14 +51,14 @@
       }
     }
     .footer {
-      margin-top: 5rem;
+      margin-top: 3rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       button {
         flex: 1;
         height: 3rem;
-        border: 00;
+        border: 0;
         border-radius: 0.5rem;
         color: #fff;
         &:first-child {
@@ -80,7 +80,7 @@
 }
 
 :global(.animate__bounceOut) {
-  --animate-duration: 3s;
+  --animate-duration: 0.4s;
 }
 :global(.animate__bounceIn) {
   --animate-duration: 0.5s;

@@ -7,7 +7,9 @@ function ODD() {
   // 是否disable Input框
   const [isDisable, setIsDisable] = useState(true);
   // 是否清除所选数据
-  const initalsendBarData = useAppSelector((s) => s.chatData.initalsendBarData);
+  const initialisedBarData = useAppSelector(
+    (s) => s.chatData.initialSendBarData
+  );
   const [items, setItems] = useState([
     { name: '单', id: 1, checked: false, bet: '.01' },
     { name: '双', id: 2, checked: false, bet: '.02' },
@@ -16,20 +18,20 @@ function ODD() {
   const [betInfo, setBetInfo] = useState({ gameName: '', bet: '' });
 
   useEffect(() => {
-    if (!initalsendBarData) return;
+    if (!initialisedBarData) return;
     const arr = items.map((item) => {
       item.checked = false;
       return item;
     });
     setItems(arr);
     setIsDisable(true);
-    // 这里无需调用 dispatch(setInitalsendBarData(false))
+    // 这里无需调用 dispatch(setInitialSendBarData(false))
     // 因为在QuickBet组件有调用，避免重复调用。
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initalsendBarData]);
+  }, [initialisedBarData]);
 
-  const selectdOne = (data: typeof items[0]) => {
+  const selectOne = (data: typeof items[0]) => {
     setBetInfo({ gameName: data.name, bet: data.bet });
     const arr = items.map((item) => {
       if (item.id === data.id) {
@@ -48,7 +50,7 @@ function ODD() {
         {items.map((item) => (
           <div
             key={item.id}
-            onClick={() => selectdOne(item)}
+            onClick={() => selectOne(item)}
             className={`${styles.oddbtn} ${item.checked && styles.active}`}
           >
             {item.name}

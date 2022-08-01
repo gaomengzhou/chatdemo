@@ -23,7 +23,7 @@ export const useDebounce = <T>(value: T, delay?: number) => {
 // 函数节流
 export const useThrottleFn = () => {
   const [flag, setFlag] = useState(true);
-  return async (fn: () => unknown, delay = 1000) => {
+  return async <T>(fn: () => T, delay = 1000) => {
     if (!flag) return;
     fn();
     setFlag(false);

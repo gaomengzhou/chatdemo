@@ -99,19 +99,19 @@ export class SocketService implements Partial<WebSocket> {
     if (url === 'https') {
       brokerUrl =
         +window.location.port.length > 0
-          ? `wss://${window.location.hostname}:${window.location.port}/wallet-betu/websocket/getMessage`
-          : `wss://${window.location.hostname}/wallet-betu/websocket/getMessage`;
+          ? `wss://${window.location.hostname}:${window.location.port}/wallet-decentralized-api/websocket/getMessage`
+          : `wss://${window.location.hostname}/wallet-decentralized-api/websocket/getMessage`;
     } else {
       brokerUrl =
         +window.location.port.length > 0
-          ? `ws://${window.location.hostname}:${window.location.port}/wallet-betu/websocket/getMessage`
-          : `ws://${window.location.hostname}/wallet-betu/websocket/getMessage`;
+          ? `ws://${window.location.hostname}:${window.location.port}/wallet-decentralized-api/websocket/getMessage`
+          : `ws://${window.location.hostname}/wallet-decentralized-api/websocket/getMessage`;
     }
     brokerUrl = `${brokerUrl}/${params}`;
     if (process.env.NODE_ENV !== 'production') {
-      // brokerUrl = this.options.path || brokerUrl;
-      // brokerUrl = `wss://hashchatpre.one2.cc/websocket/getMessage/${params}`;
-      brokerUrl = `ws://172.10.13.49:8096/wallet-betu/websocket/getMessage/${params}/`;
+      brokerUrl = `ws://13.214.207.185:8095/wallet-decentralized-api/websocket/getMessage/${params}/`;
+      // Moganna本地环境
+      // brokerUrl = `ws://172.10.13.49:8095/wallet-decentralized-api/websocket/getMessage/${params}/`;
     }
     this.ws = new WebSocket(brokerUrl);
     // 连接成功的事件

@@ -1,26 +1,53 @@
 import { Input, Toast } from 'antd-mobile';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { sedMsg, setBetStatu } from 'redux/chatRoom/slice';
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
+import { sedMsg, setBetStatus } from 'redux/chatRoom/slice';
 import { useAppDispatch, useAppSelector } from 'redux/hook';
 import socket from 'utils/websocket/Websocket';
 import { ReactComponent as SendMsg } from 'assets/images/icon-send.svg';
 import styles from './SendBar.module.scss';
 import Bet from '../component/Bet/Bet';
 import ODD from '../component/ODD/ODD';
-import BaiJiaLe from '../component/BaiJiaLe/BaiJiaLe';
+import TigerBaiJiaLe from '../component/TigerBaiJiaLe/TigerBaiJiaLe';
 import NiuNiu100 from '../component/NiuNiu100/NiuNiu100';
 import HashNiuNiu from '../component/HashNiuNiu/HashNiuNiu';
 
-const show = false;
-
-function SendBar(props: any) {
-  const { walletInfo } = props;
-  console.log(walletInfo);
+const SendBar: React.FC<{
+  emptyMsg: boolean;
+  setEmptyMsg: Dispatch<SetStateAction<boolean>>;
+  timeStamp: MutableRefObject<string>;
+}> = ({ emptyMsg, setEmptyMsg, timeStamp }) => {
+  const { walletName, address } = useAppSelector((s) => s.chatData.walletInfo);
+  const id = window.location.href.split('?id=')[1] || 1;
+  const [showBtn, setShowBtn] = useState(true);
   // 聊天信息
   const [value, setValue] = useState<string>('');
   // 显示隐藏投注
   const showBet = useAppSelector((s) => s.chatData.showBet);
-
+  const walletInfo = useAppSelector((s) => s.chatData.walletInfo);
+  const currentGame = (channelType: string) => {
+    // if (!groupName) return;
+    switch (channelType) {
+      case '1':
+        return <ODD />;
+      case '3':
+        return <TigerBaiJiaLe />;
+      case '4':
+        return <NiuNiu100 />;
+      case '2':
+        return <HashNiuNiu />;
+      default:
+        return <NiuNiu100 />;
+    }
+  };
+  // 为1是官方客服地址，0则不是
+  // const userTypeFlag = walletInfo.userType === '1';
   const dispatch = useAppDispatch();
   const sendText = async (): Promise<void> => {
     if (!value) {
@@ -35,9 +62,16 @@ function SendBar(props: any) {
     const params = {
       id: new Date().getTime(),
       messageText: value,
-      type: 1,
-      nickName: '自己',
+      address,
+      nickName: walletName || '下载APP发消息才有名字',
+      userType: walletInfo.userType, // 增加客服类型
+      channelType: walletInfo.channelType,
+      messageType: -1,
     };
+    if (emptyMsg) {
+      setEmptyMsg(false);
+      timeStamp.current = `${params.id}`;
+    }
     dispatch(sedMsg(params));
     socket.send(JSON.stringify(params));
     setValue('');
@@ -46,31 +80,29 @@ function SendBar(props: any) {
   useEffect(() => {
     const main = document.querySelector('.scroll') as HTMLDivElement;
     main.onclick = () => {
-      dispatch(setBetStatu(false));
+      main.style.scrollBehavior = 'smooth';
+      dispatch(setBetStatus(false));
     };
   }, [dispatch]);
 
-  useLayoutEffect(() => {
-    const timer: any = null;
-    const main = document.querySelector('.scroll') as HTMLDivElement;
-    if (showBet) {
-      // main.style.height = `calc(100% - 6rem - 35.5rem)`;
-      // timer = setTimeout(() => {
-      //   main.scrollTop = main.scrollHeight;
-      // }, 1000 * 0.3);
+  useEffect(() => {
+    if (+id === 0 || +id === -1) {
+      setShowBtn(false);
     } else {
+      setShowBtn(true);
+    }
+  }, [id]);
+  useLayoutEffect(() => {
+    const main = document.querySelector('.scroll') as HTMLDivElement;
+    if (!showBet) {
       main.style.height = `calc(100% - 6rem)`;
       main.scrollTop = main.scrollHeight;
     }
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [dispatch, showBet]);
+  }, [showBet]);
 
   // 投注
   const toBet = async () => {
-    dispatch(setBetStatu(!showBet));
+    dispatch(setBetStatus(!showBet));
   };
 
   return (
@@ -80,9 +112,12 @@ function SendBar(props: any) {
       }`}
     >
       <div className={styles['send-input']}>
-        <div className={styles.bet} onClick={toBet}>
-          {showBet ? '取消' : '投注'}
-        </div>
+        {showBtn && (
+          <div className={styles.bet} onClick={toBet}>
+            {showBet ? '收起' : '投注'}
+          </div>
+        )}
+
         <Input
           style={{
             border: '1px solid #f1eeee',
@@ -90,26 +125,15 @@ function SendBar(props: any) {
             padding: '0 0.5rem',
             backgroundColor: '#f6f6f6',
             height: '3rem',
-            width: 'auto',
+            width: showBtn ? 'auto' : '85%',
           }}
           value={value}
           onChange={setValue}
         />
         <SendMsg style={{ width: '3rem', height: '3rem' }} onClick={sendText} />
       </div>
-      <Bet showBet={showBet}>
-        <>
-          {/* 单双 */}
-          {show ? <ODD /> : undefined}
-          {/* 百家乐 */}
-          {show ? <BaiJiaLe /> : undefined}
-          {/* 百人牛牛 */}
-          {show ? <NiuNiu100 /> : undefined}
-          {/* 哈希牛牛 */}
-          {!show ? <HashNiuNiu /> : undefined}
-        </>
-      </Bet>
+      <Bet showBet={showBet}>{currentGame(walletInfo.channelType)}</Bet>
     </div>
   );
-}
+};
 export default SendBar;

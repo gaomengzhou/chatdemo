@@ -5,7 +5,7 @@ import styles from './HashNiuNiu.module.scss';
 function HashNiuNiu() {
   // 是否disable Input框
   const [isDisable] = useState(false);
-  const [data] = useState({ name: '闲家', id: 1, checked: true });
+  const [data] = useState({ name: '哈希牛牛', id: 1, checked: true });
   // 玩法赔率
   const [betInfo, setBetInfo] = useState({ gameName: '哈希牛牛', bet: '' });
   return (

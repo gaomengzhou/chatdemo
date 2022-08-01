@@ -6,8 +6,6 @@ interface ENV {
   REACT_APP_API_URL?: Universal;
   // 应用名称
   REACT_APP_NAME?: Universal;
-  // 版本号
-  REACT_APP_VERSION?: Universal;
   // 应用关键字
   REACT_APP_META_KEYWORDS?: Universal;
   // 应用描述

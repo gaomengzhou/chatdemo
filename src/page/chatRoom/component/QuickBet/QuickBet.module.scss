@@ -57,6 +57,10 @@
       font-size: 1rem;
       p {
         margin-right: 1rem;
+        color: #000;
+        span {
+          color: #9598aa;
+        }
       }
     }
   }
@@ -109,4 +113,13 @@
       }
     }
   }
+}
+.iconRefresh {
+  padding: 0.2rem 1rem;
+}
+.transitionRotate {
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  -webkit-transition: -webkit-transform 1s linear;
+  transition: transform 1s linear;
 }

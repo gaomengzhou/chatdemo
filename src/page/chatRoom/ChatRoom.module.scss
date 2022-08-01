@@ -32,8 +32,9 @@
     right: 0;
     bottom: 6rem;
     z-index: 100;
+    transition: 0.3s;
   }
   .to-bottom-betopen {
-    bottom: 41.5rem;
+    transform: translate(0, -35.5rem);
   }
 }

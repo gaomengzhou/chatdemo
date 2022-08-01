@@ -13,12 +13,12 @@ export const loadSingleScript = (loadUrl: string) => {
   s.charset = 'utf-8';
   document.body.appendChild(s);
   return new Promise((resolve) => {
-    // document.addEventListener('deviceready', () => {
+    // document.addEventListener('deviceReady', () => {
     //   resolve(true)
     s.addEventListener(
       'load',
-      function handleScripteLoad() {
-        s.removeEventListener('load', handleScripteLoad, false);
+      function handleScriptLoad() {
+        s.removeEventListener('load', handleScriptLoad, false);
         resolve(true);
       },
       false
@@ -53,10 +53,9 @@ export const isWebIOS = () => {
   const u = navigator.userAgent;
   return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // ios;
 };
-/** 加载iosbridge */
-export const loadBridege = async (callback: any) => {
+/** 加载iosBridge */
+export const loadBridge = (callback: any) => {
   const win = window as any;
-  // alert(win.Android);
   if ((window as any).isAndroid) {
     return callback(win.Android);
   }
@@ -82,7 +81,7 @@ export const sleep = (timeout: number, returnVal: any = true): Promise<any> => {
  * 循环睡眠
  * @param pollTimes 循环睡眠次数
  * @param options 配置 默认：{maxPollTimes: 100, stepSleepTime: 1000, maxSleepTime: 1000 * 10 }
- * @param opitons.maxPollTimes 循环睡眠次数
+ * @param options.maxPollTimes 循环睡眠次数
  * @param options.stepSleepTime 每次休眠时间
  * @param options.maxSleepTime 每次最大休眠时间，负数不限制
  * @return 超过报错
@@ -114,6 +113,7 @@ export const sleepLoop = (
 /**
  * 时间倒计时数字
  * @param times 单位秒
+ * @param defaultStr
  * @return 格式化结果Day:HH:mm:ss
  */
 export const countDownFormatStr = (times: number, defaultStr = '00:00') => {
@@ -121,7 +121,7 @@ export const countDownFormatStr = (times: number, defaultStr = '00:00') => {
   if (!seconds || seconds <= 0) return defaultStr;
   const array = [];
 
-  let s = null;
+  let s: number;
 
   // 秒
   s = seconds % 60;
@@ -144,6 +144,32 @@ export const countDownFormatStr = (times: number, defaultStr = '00:00') => {
   array.unshift(s < 10 ? `0${s}` : `${s}`);
   return array.join(':');
 };
+// 获取光标位置
+export const getPosition = (element: any) => {
+  const docu: any = window.document;
+  // const { target } = element;
+  element.target.type = 'text';
+  let cursorPos = 0;
+  if (docu.selection) {
+    // IE
+    const selectRange = docu.selection.createRange();
+    selectRange.moveStart('character', -element.value.length);
+    cursorPos = selectRange.text.length;
+  } else if (
+    element.target.selectionStart ||
+    +element.target.selectionStart === 0
+  ) {
+    // 获取光标结束的位置
+    const len = element.target.value.length;
+    if (element.target.selectionStart > len - 3) {
+      element.target.selectionStart = len - 3;
+      element.target.selectionEnd = len - 3;
+    }
+    cursorPos = element.target.selectionStart;
+    // element.target.setSelectionRange(0, len - 3);
+  }
+  return cursorPos;
+};
 
 export default {
   loadSingleScript,
@@ -151,8 +177,9 @@ export default {
   isIOS,
   isWebAndroid,
   isWebIOS,
-  loadBridege,
+  loadBridge,
   sleep,
   sleepLoop,
   countDownFormatStr,
+  getPosition,
 };

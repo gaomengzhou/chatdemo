@@ -7,7 +7,9 @@ function NiuNiu100() {
   // 是否disable Input框
   const [isDisable, setIsDisable] = useState(true);
   // 是否清除所选数据
-  const initalsendBarData = useAppSelector((s) => s.chatData.initalsendBarData);
+  const initalsendBarData = useAppSelector(
+    (s) => s.chatData.initialSendBarData
+  );
   const [data, setData] = useState([
     { name: '上庄', id: 1, checked: false, bet: '.05' },
     { name: '闲A', id: 2, checked: false, bet: '.01' },
@@ -30,7 +32,7 @@ function NiuNiu100() {
     });
     setData(arr);
     setIsDisable(true);
-    // 这里无需调用 dispatch(setInitalsendBarData(false))
+    // 这里无需调用 dispatch(setInitialSendBarData(false))
     // 因为在QuickBet组件有调用，避免重复调用。
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,11 +41,7 @@ function NiuNiu100() {
   const choose = (source: typeof data[0]) => {
     setBetInfo({ gameName: source.name, bet: source.bet });
     const arr = data.map((item) => {
-      if (item.id === source.id) {
-        item.checked = true;
-      } else {
-        item.checked = false;
-      }
+      item.checked = item.id === source.id;
       return item;
     });
     setIsDisable(false);
