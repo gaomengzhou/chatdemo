@@ -3,18 +3,25 @@ const path = require('path');
 const cheerio = require('cheerio');
 const dateFns = require('date-fns');
 
-const versionEnv = `PROD_${dateFns.format(
-  new Date(),
-  'yyyyMMdd|HHmm'
-)}`.replace('|', 'T');
+let version = '';
+if (fs.existsSync('./version.txt')) {
+  version = fs.readFileSync('./version.txt', { encoding: 'utf-8' });
+  if (typeof version == 'string') {
+    if (!(version.startsWith('RLS_') || version.startsWith('DEV_')))
+      version = '';
+    else version = version.replace(/[\n,\r\n]/g, '');
+  }
+}
+
+const versionEnv =
+  version ||
+  `PROD_${dateFns.format(new Date(), 'yyyyMMdd|HHmm')}`.replace('|', 'T');
 const packageEnv = dateFns
   .format(new Date(), 'yyyyMMdd|HHmm')
   .replace('|', 'T');
 
 const opts = { encoding: 'UTF-8' };
 const rootPath = path.resolve(__dirname, '');
-// console.log('__dirname', __dirname);
-// console.log('rootPath', rootPath);
 const h5Path = path.resolve(rootPath, 'dist/index.html');
 const pcPath = path.resolve(rootPath, 'dist/index.html');
 const appPath = path.resolve(rootPath, 'public/temp.html');
